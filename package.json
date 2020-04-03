@@ -1,0 +1,32 @@
+{
+  "name": "next_with_antd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehnantawit/next_with_antd.git"
+  },
+  "keywords": [
+    "next.js",
+    "with",
+    "antd",
+    "design"
+  ],
+  "author": "aeh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aehnantawit/next_with_antd/issues"
+  },
+  "homepage": "https://github.com/aehnantawit/next_with_antd#readme",
+  "dependencies": {
+    "next": "^9.3.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
