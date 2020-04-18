@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import fetch from 'node-fetch';
 import { Layout, Menu, Button, Tooltip, Avatar, Card, Typography, Input, Row, Col, Radio, Breadcrumb, Table, Modal, Form, message } from 'antd';
 import {
     MenuUnfoldOutlined,
@@ -20,6 +21,23 @@ const { Header, Sider, Content } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
 const { Column } = Table;
+
+Number.prototype.padLeft = function (base, chr) {
+    var len = (String(base || 10).length - String(this).length) + 1;
+    return len > 0 ? new Array(len).join(chr || '0') + this : this;
+}
+
+const UTC2DATE = props => {
+
+    const d = new Date(props.utc);
+    const dformat = [(d.getMonth() + 1).padLeft(),
+    d.getDate().padLeft(),
+    d.getFullYear()].join('/') + ' ' +
+        [d.getHours().padLeft(),
+        d.getMinutes().padLeft()].join(':');
+
+    return <span>{`${dformat}`}</span>
+}
 
 // const columns = [
 //     {
@@ -51,21 +69,21 @@ const { Column } = Table;
 const data = [
     {
         key: '1',
-        name: 'John Brown',
-        status: true,
-        created: '05-04-2020 11:38'
+        Username: 'John Brown',
+        isBlock: true,
+        createdAt: '05-04-2020 11:38'
     },
     {
         key: '2',
-        name: 'สมชาย ใจดี',
-        status: true,
-        created: '01-04-2020 16:10'
+        Username: 'สมชาย ใจดี',
+        isBlock: false,
+        createdAt: '01-04-2020 16:10'
     },
     {
         key: '3',
-        name: 'admin ทดสอบ',
-        status: false,
-        created: '31-03-2020 08:26'
+        Username: 'admin ทดสอบ',
+        isBlock: false,
+        createdAt: '01-04-2020 08:26'
     }
 ];
 
@@ -73,8 +91,21 @@ class Index extends Component {
     state = {
         collapsed: false,
         modalShow: false,
-        modalEditShow: false
+        modalEditShow: false,
+        list_member: []
     };
+
+    componentDidMount() {
+        this.setState({ list_member: data });
+        // this.getMember();
+    }
+
+    async getMember() {
+        const res = await fetch('http://localhost:1337/members')
+        const list_member = await res.json()
+        // console.log(list_member);
+        this.setState({ list_member: list_member });
+    }
 
     toggle = () => {
         this.setState({
@@ -83,7 +114,7 @@ class Index extends Component {
     };
 
     refresh = () => {
-        console.log('-- refresh --');
+        this.getMember();
     }
 
     modalToggle = () => {
@@ -122,7 +153,7 @@ class Index extends Component {
                     <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                         <Menu.Item key="1">
                             <UserOutlined />
-                            <span>nav 1</span>
+                            <span>Members</span>
                         </Menu.Item>
                         <Menu.Item key="2">
                             <VideoCameraOutlined />
@@ -181,15 +212,16 @@ class Index extends Component {
                             </Row>
                         </Card>
                         <Card size="small" title="Members" extra={<Tooltip title="Reload"><a href="#" onClick={this.refresh}><SyncOutlined style={{ fontSize: '22px' }} /></a></Tooltip>} style={{ width: '100%', marginTop: '10px' }}>
-                            <Table size="middle" bordered dataSource={data}>
-                                <Column title="Name" dataIndex="name" key="name" width="50%"
-                                render= { name => (<a href="#" onClick={ this.modalEditToggle }>{name}</a>)}
+                            <Table size="middle" bordered dataSource={this.state.list_member}>
+                                <Column title="Name" dataIndex="Username" key="Username" width="50%"
+                                    render={name => (<a href="#" onClick={this.modalEditToggle}>{name}</a>)}
                                 />
-                                <Column title="Status" dataIndex="status" key="status" width="20%" align="center"
-                                render={status => (
-                                    <span>{status === true ? <CheckCircleOutlined style={{ fontSize: '22px', color: 'green' }} /> : <StopOutlined style={{ fontSize: '22px', color: 'red' }} />}</span>
-                                  )} />
-                                <Column title="Created" dataIndex="created" key="created" width="30%" align="center" />
+                                <Column title="Status" dataIndex="isBlock" key="isBlock" width="20%" align="center"
+                                    render={status => (
+                                        <span>{status === false ? <CheckCircleOutlined style={{ fontSize: '22px', color: 'green' }} /> : <StopOutlined style={{ fontSize: '22px', color: 'red' }} />}</span>
+                                    )} />
+                                <Column title="Created" dataIndex="createdAt" key="createdAt" width="30%" align="center"
+                                    render={utc => <UTC2DATE utc={utc} />} />
                             </Table>
                         </Card>
                     </Content>
@@ -273,8 +305,8 @@ class Index extends Component {
                                     SAVE CHANGE
                                 </Button>
                                 <div style={{ textAlign: 'center', margin: '10px 0' }}><Text strong>OR</Text></div>
-                                <Button size="large" type="danger" htmlType="button" onClick={ this.modalEditToggle } icon={<StopOutlined />} block>
-                                 BLOCK
+                                <Button size="large" type="danger" htmlType="button" onClick={this.modalEditToggle} icon={<StopOutlined />} block>
+                                    BLOCK
                                 </Button>
                             </Form.Item>
                         </Form>
