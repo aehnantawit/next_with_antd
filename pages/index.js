@@ -66,32 +66,32 @@ const UTC2DATE = props => {
 //     },
 // ];
 
-const data = [
-    {
-        key: '1',
-        Username: 'John Brown',
-        isBlock: true,
-        createdAt: '05-04-2020 11:38'
-    },
-    {
-        key: '2',
-        Username: 'สมชาย ใจดี',
-        isBlock: false,
-        createdAt: '01-04-2020 16:10'
-    },
-    {
-        key: '3',
-        Username: 'admin ทดสอบ',
-        isBlock: false,
-        createdAt: '01-04-2020 08:26'
-    },
-    {
-        key: '4',
-        Username: 'nantawit aeh',
-        isBlock: false,
-        createdAt: '09-04-2020 09:31'
-    }
-];
+// const data = [
+//     {
+//         key: '1',
+//         Username: 'John Brown',
+//         isBlock: true,
+//         createdAt: '05-04-2020 11:38'
+//     },
+//     {
+//         key: '2',
+//         Username: 'สมชาย ใจดี',
+//         isBlock: false,
+//         createdAt: '01-04-2020 16:10'
+//     },
+//     {
+//         key: '3',
+//         Username: 'admin ทดสอบ',
+//         isBlock: false,
+//         createdAt: '01-04-2020 08:26'
+//     },
+//     {
+//         key: '4',
+//         Username: 'nantawit aeh',
+//         isBlock: false,
+//         createdAt: '09-04-2020 09:31'
+//     }
+// ];
 
 class Index extends Component {
     state = {
@@ -102,14 +102,13 @@ class Index extends Component {
     };
 
     componentDidMount() {
-        this.setState({ list_member: data });
-        // this.getMember();
+        // this.setState({ list_member: data });
+        this.getMember();
     }
 
     async getMember() {
-        const res = await fetch('http://localhost:1337/members')
+        const res = await fetch('https://api.github.com/users')
         const list_member = await res.json()
-        // console.log(list_member);
         this.setState({ list_member: list_member });
     }
 
@@ -219,15 +218,19 @@ class Index extends Component {
                         </Card>
                         <Card size="small" title="Members" extra={<Tooltip title="Reload"><a href="#" onClick={this.refresh}><SyncOutlined style={{ fontSize: '22px' }} /></a></Tooltip>} style={{ width: '100%', marginTop: '10px' }}>
                             <Table size="middle" bordered dataSource={this.state.list_member}>
-                                <Column title="Name" dataIndex="Username" key="Username" width="50%"
-                                    render={name => (<a href="#" onClick={this.modalEditToggle}>{name}</a>)}
+                                <Column title="Image" dataIndex="avatar_url" key="avatar_url" width="10%" align="center"
+                                    render={avatar_url => (<Avatar src={avatar_url} />)}
                                 />
-                                <Column title="Status" dataIndex="isBlock" key="isBlock" width="20%" align="center"
+
+                                <Column title="Name" dataIndex="login" key="login" width="90%"                                    
+                                    render={login => (<a href="#" onClick={this.modalEditToggle}>{login}</a>)}
+                                />
+                                {/* <Column title="Status" dataIndex="isBlock" key="isBlock" width="20%" align="center"
                                     render={status => (
                                         <span>{status === false ? <CheckCircleOutlined style={{ fontSize: '22px', color: 'green' }} /> : <StopOutlined style={{ fontSize: '22px', color: 'red' }} />}</span>
                                     )} />
                                 <Column title="Created" dataIndex="createdAt" key="createdAt" width="30%" align="center"
-                                    render={utc => <UTC2DATE utc={utc} />} />
+                                    render={utc => <UTC2DATE utc={utc} />} /> */}
                             </Table>
                         </Card>
                     </Content>
